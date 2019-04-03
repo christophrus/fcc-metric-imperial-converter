@@ -12,13 +12,11 @@ function ConvertHandler() {
 
     var matchInputNum = /^((\d|\,|\.|\/)+)?([a-zA-Z]+)/.exec(input);
 
-    console.log(matchInputNum);
-
     if (matchInputNum != 0) {
 
       if (matchInputNum[1] === undefined) return 1;
 
-      validNum = /^(\d+((,|\.)\d+(\/\d+)?)?)/.exec(matchInputNum[1]);
+      validNum = /^(\d+(((\/)\d+)|(,|\.)\d+(\/\d+)?)?)/.exec(matchInputNum[1]);
 
       if (validNum != null) {
 
@@ -36,30 +34,49 @@ function ConvertHandler() {
         }
       }
     }
-
     return null;
   };
   
   this.getUnit = function(input) {
-    var match = /(gal|lbs|mi|L|kg|Km)$/i.exec(input);
-    var result = (match != null) ? match[1] : 0;
+    var match = /(gal|lbs|mi|L|kg|km)$/i.exec(input);
+    var result = (match != null) ? match[1] : null;
     return result;
   };
   
   this.getReturnUnit = function(initUnit) {
+
+    if (initUnit) initUnit = initUnit.toLowerCase();
+
     convertDict = {
-      'gal': 'L',
+      'gal': 'l',
       'lbs': 'kg',
       'mi': 'km',
-      'L': 'gal',
+      'l': 'gal',
       'kg': 'lbs',
       'km': 'mi'
     }
     
     return convertDict[initUnit];
   };
+
+  this.spellOutUnit = function(unit) {
+
+    var unitDict = {
+      'gal': 'gallons',
+      'l': 'liters',
+      'lbs': 'pounds',
+      'kg': 'kilograms',
+      'mi': 'miles',
+      'km': 'kilometers'
+    }
+    
+    return unitDict[unit];
+  };
   
   this.convert = function(initNum, initUnit) {
+
+    if(initUnit) initUnit = initUnit.toLowerCase();
+
     const galToL = 3.78541;
     const lbsToKg = 0.453592;
     const miToKm = 1.60934;
@@ -69,7 +86,7 @@ function ConvertHandler() {
       case 'gal':
         result = initNum * galToL;
         break;
-      case 'L':
+      case 'l':
         result = initNum / galToL;
         break;
       case 'lbs':
@@ -94,21 +111,12 @@ function ConvertHandler() {
   
   this.getString = function(initNum=0, initUnit=null, returnNum=0, returnUnit=null) {
 
-    var unitDict = {
-      'gal': 'gallons',
-      'L': 'liters',
-      'lbs': 'pounds',
-      'kg': 'kilograms',
-      'mi': 'miles',
-      'km': 'kilometers'
-    }
-
     var result = {
       initNum: initNum,
       initUnit: initUnit,
       returnNum: returnNum,
       returnUnit: returnUnit,
-      string: `${initNum} ${unitDict[initUnit]} converts to ${returnNum} ${unitDict[returnUnit]}`
+      string: `${initNum} ${this.spellOutUnit(initUnit)} converts to ${returnNum} ${this.spellOutUnit(returnUnit)}`
     };
     
     return result;
