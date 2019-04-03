@@ -39,8 +39,6 @@ app.use(function(req, res, next) {
     .send('Not Found');
 });
 
-console.log(parseFloat("5.5/2"));
-
 //Start our server and tests!
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Listening on port " + listener.address().port);
